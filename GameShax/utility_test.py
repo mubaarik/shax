@@ -28,9 +28,11 @@ class ShaxArray:
     def getMap(self):
         return self.shaxNeighborMap
 
-class ShaxSlot(tk.Button):
-    def __init__(self,tk = tk,name = None, status = None):
-        tk.Button.__init__(self)
+class ShaxSlot:#(tk.Button):
+    def __init__(self,tk = tk,name = None, status = None, height = 30, width = 30):
+        #tk.Button.__init__(self)
+        self.height = height;
+        self.width = width;
         self.name = name;
         self.tk = tk;
         self.status = status;
@@ -58,16 +60,32 @@ class ShaxSlot(tk.Button):
             bState = self.tk.NORMAL
             bg_color = "grey"
         b = self.tk.Button(text = self.name,  bg = bg_color, state = bState)
-        _x, _y = self.findPose(width, height, pad_x, pad_y)
+        _x, _y = self.findPose(self.name, width, height, pad_x, pad_y)
         b.place(x = _x, y = _y)
-    def findPose(self,width, height, pad_x, pad_y):
-        name_x = float(self.name[0])
-        name_y = float(self.name[1])
+    def findPose(self,name, width, height, pad_x, pad_y):
+        name_x = float(name[0])
+        name_y = float(name[1])
 
         x = round((width - pad_x)/6.0*name_x + pad_x)
         y = round((height - pad_y)/6.0*name_y + pad_y)
 
         return x, y 
+    def neiPathDisp(self,width, height, pad_x, pad_y):
+        slotNeis = self.getNeighbors()
+        for neib in slotNeis:
+            x,y = self.findPose(neib, width, height, pad_x, pad_y)
+            nx,ny = self.findPose(neib, width, height, pad_x, pad_y)
+            canvas = self.tk.Canvas(self)
+            
+            if neib[0] == self.name[0]:
+                ny = ny+self.height
+                canvas.create_rectangle(x, y, nx, ny, outline="#fb0", fill="#fb0")
+                canvas.pack()
+            else:
+                nx = self.width+nx;
+                canvas.create_rectangle(x, y, nx, ny, outline="#fb0", fill="#fb0")
+                canvas.pack()
+
 
 
 
