@@ -29,10 +29,11 @@ class ShaxArray:
         return self.shaxNeighborMap
 
 class ShaxSlot:#(tk.Button):
-    def __init__(self,tk = tk,name = None, status = None, height = 30, width = 30):
+    def __init__(self,master,tk = tk,name = None, status = None, height = 3, width = 4):
         #tk.Button.__init__(self)
         self.height = height;
         self.width = width;
+        self.master = master;
         self.name = name;
         self.tk = tk;
         self.status = status;
@@ -59,30 +60,35 @@ class ShaxSlot:#(tk.Button):
         if self.status == True:
             bState = self.tk.NORMAL
             bg_color = "grey"
-        b = self.tk.Button(text = self.name,  bg = bg_color, state = bState)
+        b = self.tk.Button(text = self.name,  bg = bg_color, state = bState, height = self.height, width = self.width)
         _x, _y = self.findPose(self.name, width, height, pad_x, pad_y)
         b.place(x = _x, y = _y)
+        self.neiPathDisp(width, height, pad_x, pad_y)
     def findPose(self,name, width, height, pad_x, pad_y):
         name_x = float(name[0])
         name_y = float(name[1])
 
-        x = round((width - pad_x)/6.0*name_x + pad_x)
-        y = round((height - pad_y)/6.0*name_y + pad_y)
+        x = int(round((width - pad_x)/6.0*name_x + pad_x))
+        y = int(round((height - pad_y)/6.0*name_y + pad_y))
 
         return x, y 
     def neiPathDisp(self,width, height, pad_x, pad_y):
         slotNeis = self.getNeighbors()
         for neib in slotNeis:
             x,y = self.findPose(neib, width, height, pad_x, pad_y)
+            print "neighbor: ", neib, "self.name: ", self.name 
             nx,ny = self.findPose(neib, width, height, pad_x, pad_y)
-            canvas = self.tk.Canvas(self)
+            canvas = self.tk.Canvas(self.master)
             
             if neib[0] == self.name[0]:
-                ny = ny+self.height
+                nx = nx+self.height
+                print "changing x:", self.name;
+
                 canvas.create_rectangle(x, y, nx, ny, outline="#fb0", fill="#fb0")
                 canvas.pack()
             else:
-                nx = self.width+nx;
+                ny = self.width+ny;
+                print "changing y: ", ny 
                 canvas.create_rectangle(x, y, nx, ny, outline="#fb0", fill="#fb0")
                 canvas.pack()
 
@@ -301,12 +307,12 @@ class Shax:
                             player_irmans.append(sedex+other_slots)
         return player_irmans
 
-    def display(self,width, height, pad_x, pad_y):
+    def display(self,master, width, height, pad_x, pad_y):
         shaxArrObj = ShaxArray()
         shax_array = shaxArrObj.shax_array
         shaxObjArr = []
         for slot in shax_array:
-            slotObj = ShaxSlot(name = slot)
+            slotObj = ShaxSlot(master,name = slot)
             slotObj.slotButton(width, height, pad_x, pad_y)
             shaxObjArr.append(slotObj)
         return shaxObjArr
@@ -337,7 +343,7 @@ def disp_test():
     frame = tk.Frame(root, height = height, width = width)
     frame.pack()
     shaxObj = Shax()
-    shaxObj.display(width, height, pad_x, pad_y)
+    shaxObj.display(root, width, height, pad_x, pad_y)
     root.mainloop()
 def test_player(player = None, slot = None):
     shaxObj = Shax()
@@ -367,3 +373,9 @@ def test_player(player = None, slot = None):
 
 
 
+def main():
+    disp_test()
+    return None
+
+if __name__== "__main__":
+    main()
