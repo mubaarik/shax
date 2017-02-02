@@ -61,17 +61,22 @@ class ShaxSlot:#(tk.Button):
             bState = self.tk.NORMAL
             bg_color = "grey"
         b = self.tk.Button(text = self.name,  bg = bg_color, state = bState, height = self.height, width = self.width)
+        #print "HEIGH BUTTON:  %s" %b.height
         _x, _y = self.findPose(self.name, width, height, pad_x, pad_y)
-        b.place(x = _x, y = _y)
+        b.place(relx = _x, rely = _y)
+        print "Button x", 
         self.neiPathDisp(width, height, pad_x, pad_y)
     def findPose(self,name, width, height, pad_x, pad_y):
         name_x = float(name[0])
         name_y = float(name[1])
 
-        x = int(round((width - pad_x)/6.0*name_x + pad_x))
-        y = int(round((height - pad_y)/6.0*name_y + pad_y))
+        #x = int(round((width - pad_x)/6.0*name_x + pad_x))
+        #y = int(round((height - pad_y)/6.0*name_y + pad_y))
+        relx = (name_x+1)/8.0
+        rely = (name_y+1)/8.0
 
-        return x, y 
+        #return x, y 
+        return relx, rely
     def neiPathDisp(self,width, height, pad_x, pad_y):
         slotNeis = self.getNeighbors()
         for neib in slotNeis:
@@ -331,17 +336,34 @@ class Shax:
         for slot in shax_array:
             if slot!=slotOne:
                 pass
-
-
+class Rect:
+    def __init__(self):
+        self.height = 500
+        self.width = 500
+genRect = Rect()
+def hW(event):
+    genRect.height = event.height;
+    genRect.width = event.width;
+    print "Height: ",genRect.height
+    print "Width: ", genRect.width
+    return None#
 def disp_test():
     root = tk.Tk()
-    width = 500;
-    height = 500;
+    root.bind("<Configure>",hW)
+    width = root.winfo_height();#genRect.height
+    height = root.winfo_height();#genRect.width
     pad_x = 50;
     pad_y = 50;
-
-    frame = tk.Frame(root, height = height, width = width)
+    #root.config(height=500, width=500)
+    print "root_height: ",root.winfo_height()
+    frame = tk.Frame(root,bg = "yellow",height = height, width = width)
     frame.pack()
+    canvas = tk.Canvas(root, bg = "green",height = height, width = width)
+    canvas.create_rectangle(50, 89, 99, 64,fill="#fb0")
+
+    canvas.pack()#pack(expand = True,fill=tk.Y,in_= frame,anchor=tk.CENTER)
+    #print "bbox Canvas: ", canvas.bbox(item = None)
+    
     shaxObj = Shax()
     shaxObj.display(root, width, height, pad_x, pad_y)
     root.mainloop()
