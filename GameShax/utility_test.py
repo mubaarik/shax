@@ -61,6 +61,7 @@ class ShaxSlot:#(tk.Button):
             bState = self.tk.NORMAL
             bg_color = "grey"
         b = self.tk.Button(text = self.name,  bg = bg_color, state = bState, height = self.height, width = self.width)
+        #print "HEIGH BUTTON:  %s" %b.height
         _x, _y = self.findPose(self.name, width, height, pad_x, pad_y)
         b.place(x = _x, y = _y)
         self.neiPathDisp(width, height, pad_x, pad_y)
@@ -341,7 +342,10 @@ def disp_test():
     pad_y = 50;
 
     frame = tk.Frame(root, height = height, width = width)
-    frame.pack()
+    canvas = tk.Canvas(frame)
+    canvas.create_rectangle(50, 89, 99, 64,fill="#fb0")
+    canvas.pack(expand = 0,fill=tk.Y)
+    frame.pack(expand = 0,fill=tk.X)
     shaxObj = Shax()
     shaxObj.display(root, width, height, pad_x, pad_y)
     root.mainloop()
